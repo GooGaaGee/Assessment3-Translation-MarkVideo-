@@ -1,98 +1,176 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import { useRouter } from "expo-router";
+import { useTranslation } from "react-i18next";
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const { t, i18n } = useTranslation();
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const showLanguagePicker = () => {
+    Alert.alert(t("select_language"), t("choose_language"), [
+      {
+        text: "English",
+        onPress: () => i18n.changeLanguage("english"),
+      },
+      {
+        text: "Español",
+        onPress: () => i18n.changeLanguage("espanol"),
+      },
+      {
+        text: t("cancel"),
+        style: "cancel",
+      },
+    ]);
+  };
+
+  const router = useRouter();
+
+  const handleStart = () => {
+    router.push("/experiment");
+  };
+
+  const equipment = [
+    t("equip_1"),
+    t("equip_2"),
+    t("equip_3"),
+    t("equip_4"),
+    t("equip_5"),
+    t("equip_6"),
+  ];
+
+  const instruction = [
+    t("inst_1"),
+    t("inst_2"),
+    t("inst_3"),
+    t("inst_4"),
+    t("inst_5"),
+    t("inst_6"),
+  ];
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{t("title")}</Text>
+        <Pressable onPress={showLanguagePicker} style={styles.globeButton}>
+          <Ionicons name="globe-outline" size={28} color="black" />
+        </Pressable>
+      </View>
+
+      <Image
+        source={require("../../assets/images/parachute.png")}
+        style={styles.mainImage}
+        contentFit="contain"
+      />
+
+      <View style={styles.descriptionContainer}>
+        <Text style={styles.descriptionText}>{t("description")}</Text>
+
+        <Text style={styles.sectionTitle}>{t("equipment_title")}</Text>
+        {equipment.map((item, index) => (
+          <View key={`equip-${index}`} style={styles.bulletItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.bulletText}>{item}</Text>
+          </View>
+        ))}
+
+        <Text style={styles.sectionTitle}>{t("instruction_title")}</Text>
+        {instruction.map((item, index) => (
+          <View key={`inst-${index}`} style={styles.bulletItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.bulletText}>{item}</Text>
+          </View>
+        ))}
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <Pressable style={styles.startButton} onPress={handleStart}>
+          <Text style={styles.startText}>{t("start_lab")}</Text>
+        </Pressable>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    paddingBottom: 40,
+    backgroundColor: "#fff",
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  header: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 30,
+    paddingHorizontal: 20,
+    position: "relative",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  globeButton: {
+    position: "absolute",
+    right: 20,
+    top: 30,
+  },
+  mainImage: {
+    width: "100%",
+    height: 200,
+    marginVertical: 20,
+  },
+  descriptionContainer: {
+    paddingHorizontal: 25,
+  },
+  descriptionText: {
+    fontSize: 16,
+    color: "#444",
+    lineHeight: 22,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  bulletItem: {
+    flexDirection: "row",
+    marginBottom: 5,
+    paddingRight: 20,
+  },
+  bullet: {
+    fontSize: 18,
+    marginRight: 10,
+    color: "#5cb85c",
+  },
+  bulletText: {
+    fontSize: 15,
+    color: "#333",
+    flexShrink: 1,
+  },
+  buttonContainer: {
+    paddingHorizontal: 25,
+    marginTop: 30,
+    alignItems: "center",
+  },
+  startButton: {
+    backgroundColor: "#5cb85c",
+    width: "50%",
+    padding: 15,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  startText: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });

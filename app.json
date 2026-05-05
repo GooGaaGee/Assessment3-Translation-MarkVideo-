@@ -38,6 +38,13 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow STEMM Lab to access your camera to record experiments.",
+          "microphonePermission": "Allow STEMM Lab to access your microphone to capture audio during the parachute drop."
+        }
       ]
     ],
     "experiments": {
